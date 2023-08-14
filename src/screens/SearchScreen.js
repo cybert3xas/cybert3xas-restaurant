@@ -1,30 +1,20 @@
 import React, {useState} from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ScrollView} from 'react-native';
 import SearchBar from '../components/SearchBar';
-import yelp from '../api/yelp'; //api call
-
+import useResults from '../hooks/useResults';
+import ResultList from '../components/ResultList';
 
 const SearchScreen = () => {
   const [term, setTerm] = useState('');
-  const [results, setResults] = useState([]);
-  const [erroMessage, setErrorMessage] = useState('');
+  const[searchApi, results, erroMessage] = useResults();
 
-  //Helper Functions
-  const searchApi = async () => {
-    try{
-      //We wait for a response to come back
-      const response = await yelp.get('/search',{
-        params: {
-          limit: 50,
-          term,
-          location: 'longmont'
-        }
-      }); //the endpoint we want to hit
-    
-      setResults(response.data.businesses);
-    }catch(err){
-      setErrorMessage('Something went wrong');
-    }
+  const filterResultsByPrice = (price) =>{
+    //price == $, $$, $$$, the way the API sends them
+
+    return results.filter(result => {
+      return result.price === price;
+    });
+
   };
 
   //Component rendering
@@ -33,17 +23,27 @@ const SearchScreen = () => {
       <SearchBar 
         searchTerm={term} 
         onTermChange={newTerm => setTerm(newTerm)}
-        onTermSubmit={() => searchApi()}
+        onTermSubmit={() => searchApi(term)}
       />
+
       {erroMessage ? <Text>{erroMessage}</Text> : null}
-      <Text>We have found: {results.length}</Text>
+      
+      <ScrollView>
+        <ResultList results={filterResultsByPrice('$')} title="Cost Effective"/>
+        <ResultList results={filterResultsByPrice('$$')} title="Bit Pricier"/>
+        <ResultList results={filterResultsByPrice('$$$')} title="Big Spender"/>
+      </ScrollView>
+
     </View>
+    
   );
 };
 
 const styles = StyleSheet.create({
   mainView: {
-    backgroundColor: 'white'
+    backgroundColor: 'white',
+    ...StyleSheet.absoluteFill,
+    flex: 1
   }
 });
 
