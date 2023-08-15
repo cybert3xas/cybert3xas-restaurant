@@ -1,8 +1,17 @@
 import React from "react";
-import {View, Text, StyleSheet, FlatList} from 'react-native';
+import {View, Text, StyleSheet, FlatList, TouchableOpacity} from 'react-native';
 import ResultsDetail from "./ResultsDetail";
+import { withNavigation } from "react-navigation";
 
-const ResultList = ({title, results}) => {
+/** 
+ * withNavigation: is a component that allows you to send the props from high-end parent for a child
+ * component. In this case, result list is 3 levels below the main screen, so instead of passing
+ * down the props through each parent, we can make use of this component
+ * 
+ * navigate can take multiple params, it takes the screen you want to navigate to and it can take 
+ * an object that contains some injformation that you want to make us of in the other screen.
+ */
+const ResultList = ({title, results, navigation}) => {
     return(
         <View style={styles.container}>
             <Text style={styles.titleStyle}>{title}</Text>
@@ -12,7 +21,15 @@ const ResultList = ({title, results}) => {
                 data={results}
                 keyExtractor={(result) => result.id}
                 renderItem={({ item }) => {
-                    return <ResultsDetail result={item} />;
+                    return(
+                        <TouchableOpacity 
+                            onPress={() => navigation.navigate('ResultsShow', {'id': item.id})}
+                        >
+                            <ResultsDetail result={item} />
+                        </TouchableOpacity>
+
+                    ); 
+                        
                 }}
                 showsHorizontalScrollIndicator={false}
             />
@@ -32,4 +49,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default ResultList;
+export default withNavigation(ResultList);

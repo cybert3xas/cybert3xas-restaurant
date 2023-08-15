@@ -12,6 +12,6 @@ export default axios.create({
     headers:{
         Authorization: 
             //'Bearer {yourApiKey}'
-            'Bearer j0IpZOxnwBfoiK9NCiMyFC1J6Op3J24TrrFgWcLyJOsk5qx-yKPNrk-bLJgTy-26v2lzA_wNlQYtJukfrRWIGawv_MHeocv68jvbJXPn0QxJLkZRb4IYm9o-KK50YXYx'
+            'Bearer '
     }
 });
