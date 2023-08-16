@@ -12,6 +12,10 @@ import { withNavigation } from "react-navigation";
  * an object that contains some injformation that you want to make us of in the other screen.
  */
 const ResultList = ({title, results, navigation}) => {
+    if(!results.length){
+        return null;
+    }
+    
     return(
         <View style={styles.container}>
             <Text style={styles.titleStyle}>{title}</Text>
